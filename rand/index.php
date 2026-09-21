@@ -15,9 +15,11 @@ while ($modelRandNewId) {
     $modelRandNewId = $modelRandId == $modelId ? true : false;
 }
 
+$modelMessage = isset($modelList['messages'][$modelRandId-1]) ? $modelList['messages'][$modelRandId-1] : '';
+
 header("Content-type: application/json");
 echo $jsonCompatible->json_encode(array('model' => array(
     'id' => $modelRandId,
     'name' => $modelList['models'][$modelRandId-1],
-    'message' => $modelList['messages'][$modelRandId-1]
+    'message' => $modelMessage
 )));

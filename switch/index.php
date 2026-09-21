@@ -11,9 +11,11 @@ $modelList = $modelList->get_list();
 $modelSwitchId = $modelId + 1;
 if (!isset($modelList['models'][$modelSwitchId-1])) $modelSwitchId = 1;
 
+$modelMessage = isset($modelList['messages'][$modelSwitchId-1]) ? $modelList['messages'][$modelSwitchId-1] : '';
+
 header("Content-type: application/json");
 echo $jsonCompatible->json_encode(array('model' => array(
     'id' => $modelSwitchId,
     'name' => $modelList['models'][$modelSwitchId-1],
-    'message' => $modelList['messages'][$modelSwitchId-1]
+    'message' => $modelMessage
 )));

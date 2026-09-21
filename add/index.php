@@ -12,7 +12,7 @@ $modelList = $modelList['models'];
 foreach ($modelList as $modelName) {
     if (!is_array($modelName) && file_exists('../model/'.$modelName.'/textures.cache')) {
         
-        $textures = $texturesNew = array();
+        $textures = $texturesNew = $texturesMerge = array();
         $modelTexturesList = $modelTextures->get_list($modelName);
         $modelNameTextures = $modelTextures->get_textures($modelName);
         if (is_array($modelTexturesList)) foreach ($modelTexturesList['textures'] as $v) $textures[] = str_replace('\/', '/', json_encode($v));

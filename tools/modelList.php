@@ -8,7 +8,8 @@
     /* 获取模组名称 */
     function id_to_name($id) {
         $list = self::get_list();
-        return $list['models'][(int)$id-1];
+        $index = (int)$id - 1;
+        return isset($list['models'][$index]) ? $list['models'][$index] : false;
     }
     
     /* 转换模型名称 */

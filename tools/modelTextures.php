@@ -3,7 +3,9 @@
     /* 获取材质名称 */
     function get_name($modelName, $id) {
         $list = self::get_list($modelName);
-        return $list['textures'][(int)$id-1];
+        $index = (int)$id - 1;
+        if (!is_array($list) || !isset($list['textures'][$index])) return null;
+        return $list['textures'][$index];
     }
     
     /* 获取列表缓存 */
