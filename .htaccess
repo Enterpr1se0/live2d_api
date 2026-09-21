@@ -46,10 +46,10 @@ RedirectMatch 404 (?i)/tools/
 #    想收紧就把 * 换成站点域名，例如：
 #      Header set Access-Control-Allow-Origin "https://blog.example.com"
 # --------------------------------------------------------------------------
-<IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-    Header set X-Content-Type-Options "nosniff"
-</IfModule>
+#<IfModule mod_headers.c>
+#    Header set Access-Control-Allow-Origin "*"
+#    Header set X-Content-Type-Options "nosniff"
+#</IfModule>
 
 # --------------------------------------------------------------------------
 # 7) 不要把 PHP 报错吐进响应体
