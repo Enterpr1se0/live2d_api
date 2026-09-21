@@ -1,0 +1,18 @@
+# ==========================================================================
+#  model/ — 只允许静态资源，禁止任何脚本被解析或执行
+#  万一模型目录被塞进 .php/.phtml 之类文件，也不会被当成脚本跑起来
+# ==========================================================================
+
+Options -Indexes
+
+<FilesMatch "(?i)\.(php|phtml|php[0-9]|phps|phar|cgi|pl|py|sh|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+# mod_php 下直接把引擎关掉；PHP-FPM 环境没有 php_flag，用 IfModule 包住避免 500
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
