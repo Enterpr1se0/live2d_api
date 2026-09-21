@@ -14,16 +14,50 @@ $modelId = (int)$id[0];
 $modelTexturesId = isset($id[1]) ? (int)$id[1] : 0;
 
 $modelName = $modelList->id_to_name($modelId);
+$isModelGroup = is_array($modelName);
 
-if (is_array($modelName)) {
+if ($isModelGroup) {
     $modelName = $modelTexturesId > 0 ? $modelName[$modelTexturesId-1] : $modelName[0];
-    $json = json_decode(file_get_contents('../model/'.$modelName.'/index.json'), 1);
-} else {
-    $json = json_decode(file_get_contents('../model/'.$modelName.'/index.json'), 1);
-    if ($modelTexturesId > 0) {
+}
+
+$modelPath = '../model/'.$modelName.'/';
+$model3Files = glob($modelPath.'*.model3.json');
+
+/* ---------- Cubism 3 / 4 / 5 模型（model3.json） ---------- */
+if (!empty($model3Files)) {
+    $json = json_decode(file_get_contents($model3Files[0]), 1);
+    $fileReferences = &$json['FileReferences'];
+
+    if (!$isModelGroup && $modelTexturesId > 0) {
         $modelTexturesName = $modelTextures->get_name($modelName, $modelTexturesId);
-        if (isset($modelTexturesName)) $json['textures'] = is_array($modelTexturesName) ? $modelTexturesName : array($modelTexturesName);
+        if (isset($modelTexturesName)) $fileReferences['Textures'] = is_array($modelTexturesName) ? $modelTexturesName : array($modelTexturesName);
     }
+
+    foreach ($fileReferences['Textures'] as $k => $texture)
+        $fileReferences['Textures'][$k] = '../model/' . $modelName . '/' . $texture;
+
+    $fileReferences['Moc'] = '../model/'.$modelName.'/'.$fileReferences['Moc'];
+    foreach (array('Pose', 'Physics', 'DisplayInfo') as $key)
+        if (isset($fileReferences[$key])) $fileReferences[$key] = '../model/'.$modelName.'/'.$fileReferences[$key];
+
+    if (isset($fileReferences['Motions']))
+        foreach ($fileReferences['Motions'] as $k => $v) foreach ($v as $k2 => $v2)
+            if (isset($v2['File'])) $fileReferences['Motions'][$k][$k2]['File'] = '../model/'.$modelName.'/'.$v2['File'];
+
+    if (isset($fileReferences['Expressions']))
+        foreach ($fileReferences['Expressions'] as $k => $v)
+            if (isset($v['File'])) $fileReferences['Expressions'][$k]['File'] = '../model/'.$modelName.'/'.$v['File'];
+
+    header("Content-type: application/json");
+    echo $jsonCompatible->json_encode($json);
+    exit;
+}
+
+/* ---------- Cubism 2 模型（index.json） ---------- */
+$json = json_decode(file_get_contents($modelPath.'index.json'), 1);
+if (!$isModelGroup && $modelTexturesId > 0) {
+    $modelTexturesName = $modelTextures->get_name($modelName, $modelTexturesId);
+    if (isset($modelTexturesName)) $json['textures'] = is_array($modelTexturesName) ? $modelTexturesName : array($modelTexturesName);
 }
 
 foreach ($json['textures'] as $k => $texture)

@@ -30,6 +30,13 @@
         } else {
             foreach (glob('../model/'.$modelName.'/textures/*') as $v)
                 $textures[] = str_replace('../model/'.$modelName.'/', '', $v);
+            if (empty($textures)) {                                          // Cubism 3/4/5：直接读取 model3.json 的贴图列表
+                foreach (glob('../model/'.$modelName.'/*.model3.json') as $model3File) {
+                    $json = json_decode(file_get_contents($model3File), 1);
+                    if (!empty($json['FileReferences']['Textures'])) $textures[] = $json['FileReferences']['Textures'];
+                    break;
+                }
+            }
             return empty($textures) ? null : $textures;
         }
     }
